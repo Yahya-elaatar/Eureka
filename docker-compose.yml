@@ -1,0 +1,88 @@
+services:
+  mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: YAhya123456.
+    ports:
+      - "3306:3306"
+  eureka-service:
+    container_name: eureka-service
+    build: ./Eureka  # Specify the build context
+    ports:
+      - "8761:8761"
+    expose:
+      - "8761"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      interval: 10s
+      retries: 3
+
+  client-service:
+    container_name: client-service
+    build: ./Client
+    ports:
+      - "8081:8081"
+    expose:
+      - "8081"
+
+    depends_on:
+      eureka-service:
+        condition: service_healthy
+      mysql:
+        condition: service_started
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/clientdb?createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: YAhya123456.
+      DISCOVERY_SERVICE_URL: http://eureka-service:8761/eureka/
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
+      interval: 10s
+      retries: 3
+
+  voiture-service:
+    container_name: voiture-service
+    build: ./voiture
+    ports:
+      - "8082:8082"
+    expose:
+      - "8082"
+    depends_on:
+      eureka-service:
+        condition: service_healthy
+      mysql:
+        condition: service_started
+      client-service:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/voituredb?createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: YAhya123456.
+      DISCOVERY_SERVICE_URL: http://eureka-service:8761/eureka/
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8082/actuator/health"]
+      interval: 10s
+      retries: 3
+
+  gateway-service:
+    container_name: gateway-service
+    build: ./gateway
+    ports:
+      - "8888:8888"
+    expose:
+      - "8888"
+    depends_on:
+      eureka-service:
+        condition: service_healthy
+    environment:
+      DISCOVERY_SERVICE_URL: http://eureka-service:8761/eureka/
+
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: YAhya123456.
+    ports:
+      - "8090:80"

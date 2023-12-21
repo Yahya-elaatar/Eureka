@@ -1,0 +1,15 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: SERVICE-CAR
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://mysql:3306/voituredb?createDatabaseIfNotExist=true
+    username: "root"
+    password: "YAhya123456."
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
