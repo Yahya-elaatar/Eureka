@@ -3,7 +3,8 @@
 
 # __Eureka Server__ #
 
-![1](https://github.com/Yahya-elaatar/Eureka/assets/114237312/db6629db-5067-48d3-b4a6-fe2bff56e055)
+![Screenshot 2023-12-28 151422](https://github.com/Yahya-elaatar/Eureka/assets/114237312/95a00aa1-4c03-47ab-90c9-c0cfd73a933c)
+
 
 # GATEWAY #
 
